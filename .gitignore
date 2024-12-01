@@ -6,9 +6,6 @@
 *.a
 *.out
 
-# Go module files
-go.sum
-
 # Dependencies (for vendored dependencies, if used)
 vendor/
 
