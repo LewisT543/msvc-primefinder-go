@@ -1,0 +1,46 @@
+# Binaries and build artifacts
+*.exe
+*.dll
+*.so
+*.dylib
+*.a
+*.out
+
+# Go module files
+go.sum
+
+# Dependencies (for vendored dependencies, if used)
+vendor/
+
+# Logs and debug output
+*.log
+
+# IDE and editor configuration files
+.idea/
+.vscode/
+*.swp
+*~
+
+# Temporary files and directories
+*.tmp
+*.temp
+*.bak
+*.old
+*.orig
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Coverage output
+coverage.out
+
+# Test binary files
+*.test
+
+# Node.js files (if your project includes front-end assets)
+node_modules/
+
+# Docker-related files (if applicable)
+*.container
+*.tar
