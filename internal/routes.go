@@ -1,13 +1,14 @@
 package internal
 
 import (
-	"github.com/LewisT543/msvc-primefinder-go/internal/handlers"
+	"github.com/LewisT543/msvc-primefinder-go/internal/handler"
+	"github.com/LewisT543/msvc-primefinder-go/internal/repository/order"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"net/http"
 )
 
-func loadRoutes() *chi.Mux {
+func (a *App) loadRoutes() {
 	router := chi.NewRouter()
 
 	router.Use(middleware.Logger)
@@ -16,15 +17,20 @@ func loadRoutes() *chi.Mux {
 		w.WriteHeader(http.StatusOK)
 	})
 
-	router.Route("/orders", loadOrderRoutes)
+	router.Route("/orders", a.loadOrderRoutes)
 
-	return router
+	a.router = router
 }
 
-func loadOrderRoutes(router chi.Router) {
-	orderHandler := &handlers.Order{}
+func (a *App) loadOrderRoutes(router chi.Router) {
+	orderHandler := &handler.Order{
+		Repo: &order.RedisRepo{
+			Client: a.rdb,
+		},
+	}
 
 	router.Post("/", orderHandler.Create)
+	router.Post("/generate", orderHandler.Generate)
 	router.Get("/", orderHandler.List)
 	router.Get("/{id}", orderHandler.GetByID)
 	router.Put("/{id}", orderHandler.UpdateByID)
