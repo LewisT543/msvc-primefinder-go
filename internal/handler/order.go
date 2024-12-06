@@ -75,14 +75,26 @@ func (o *Order) Generate(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("failed to parse:", err)
 	}
 
-	orders := utils.GenerateOrders(int(quant))
+	options := utils.NewGenerateOrderOptions()
+	orders := utils.GenerateOrders(int(quant), options)
+
 	_, err = json.Marshal(orders)
 	if err != nil {
 		fmt.Println("failed to marshal:", err)
 	}
 
+	fmt.Println("Inserting orders")
 	fmt.Println(orders)
 
+	for _, ord := range orders {
+		err := o.Repo.Insert(r.Context(), ord)
+		if err != nil {
+			fmt.Println("failed to write: ", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+	}
+	w.WriteHeader(http.StatusCreated)
 }
 
 func (o *Order) List(w http.ResponseWriter, r *http.Request) {

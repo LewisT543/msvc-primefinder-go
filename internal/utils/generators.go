@@ -7,34 +7,33 @@ import (
 	"time"
 )
 
-const maxLineItems = 10
-const minLineItems = 6
-
-const maxQuantity = 10
-const maxPrice = 10000
-
-func GenerateOrders(n int) []model.Order {
+func GenerateOrders(n int, opt GenerateOrderOptions) []model.Order {
 	orders := make([]model.Order, n)
 
 	for i := 0; i < n; i++ {
-		numLineItems := rand.IntN(maxLineItems-minLineItems+1) + minLineItems
-		createdAt := time.Now()
+		order := generateOrder(opt)
+		orders[i] = order
+	}
+	return orders
+}
 
-		lineItems := make([]model.LineItem, numLineItems)
-		for j := 0; j < numLineItems; j++ {
-			lineItems[j] = model.LineItem{
-				ItemID:   uuid.New(),
-				Quantity: uint(rand.IntN(maxQuantity) + 1),
-				Price:    uint(rand.IntN(maxPrice) + 1),
-			}
-		}
+func generateOrder(opt GenerateOrderOptions) model.Order {
+	numLineItems := rand.IntN(opt.MaxLineItems-opt.MinLineItems+1) + opt.MinLineItems
+	createdAt := time.Now()
 
-		orders[i] = model.Order{
-			CustomerID: uuid.New(),
-			LineItems:  lineItems,
-			CreatedAt:  &createdAt,
+	lineItems := make([]model.LineItem, numLineItems)
+	for j := 0; j < numLineItems; j++ {
+		lineItems[j] = model.LineItem{
+			ItemID:   uuid.New(),
+			Quantity: uint(rand.IntN(opt.MaxQuantity) + 1),
+			Price:    uint(rand.IntN(opt.MaxPrice) + 1),
 		}
 	}
 
-	return orders
+	return model.Order{
+		OrderID:    rand.Uint64(),
+		CustomerID: uuid.New(),
+		LineItems:  lineItems,
+		CreatedAt:  &createdAt,
+	}
 }
