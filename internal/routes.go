@@ -1,7 +1,7 @@
 package internal
 
 import (
-	"github.com/LewisT543/msvc-primefinder-go/internal/handler"
+	"github.com/LewisT543/msvc-primefinder-go/internal/api/handler"
 	"github.com/LewisT543/msvc-primefinder-go/internal/repository/order"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
