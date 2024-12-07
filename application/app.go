@@ -1,8 +1,9 @@
-package internal
+package application
 
 import (
 	"context"
 	"fmt"
+	"github.com/LewisT543/msvc-primefinder-go/application/config"
 	"github.com/redis/go-redis/v9"
 	"net/http"
 	"time"
@@ -11,10 +12,10 @@ import (
 type App struct {
 	router http.Handler
 	rdb    *redis.Client
-	config Config
+	config config.Config
 }
 
-func New(config Config) *App {
+func New(config config.Config) *App {
 	app := &App{
 		rdb: redis.NewClient(&redis.Options{
 			Addr: config.RedisAddress,

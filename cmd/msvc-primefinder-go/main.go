@@ -3,14 +3,15 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/LewisT543/msvc-primefinder-go/application/config"
 	"os"
 	"os/signal"
 
-	"github.com/LewisT543/msvc-primefinder-go/internal"
+	"github.com/LewisT543/msvc-primefinder-go/application"
 )
 
 func main() {
-	app := internal.New(internal.LoadConfig())
+	app := application.New(config.LoadConfig())
 
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()

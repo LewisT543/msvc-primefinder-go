@@ -1,7 +1,7 @@
-package utils
+package generator
 
 import (
-	"github.com/LewisT543/msvc-primefinder-go/internal/model"
+	"github.com/LewisT543/msvc-primefinder-go/application/model"
 	"github.com/google/uuid"
 	"math/rand/v2"
 	"time"

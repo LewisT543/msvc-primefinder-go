@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/LewisT543/msvc-primefinder-go/internal/model"
-	"github.com/LewisT543/msvc-primefinder-go/internal/repository/order"
-	"github.com/LewisT543/msvc-primefinder-go/internal/utils"
+	"github.com/LewisT543/msvc-primefinder-go/application/model"
+	"github.com/LewisT543/msvc-primefinder-go/application/repository/order"
+	"github.com/LewisT543/msvc-primefinder-go/application/utils/generator"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 	"math/rand"
@@ -75,8 +75,8 @@ func (o *Order) Generate(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("failed to parse:", err)
 	}
 
-	options := utils.NewGenerateOrderOptions()
-	orders := utils.GenerateOrders(int(quant), options)
+	options := generator.NewGenerateOrderOptions()
+	orders := generator.GenerateOrders(int(quant), options)
 
 	_, err = json.Marshal(orders)
 	if err != nil {

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/LewisT543/msvc-primefinder-go/internal/model"
+	"github.com/LewisT543/msvc-primefinder-go/application/model"
 	"github.com/redis/go-redis/v9"
 )
 

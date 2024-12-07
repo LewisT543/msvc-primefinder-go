@@ -1,4 +1,4 @@
-package internal
+package config
 
 import (
 	"os"
@@ -12,7 +12,7 @@ type Config struct {
 
 func LoadConfig() Config {
 	cfg := Config{
-		RedisAddress: "localhost:6479",
+		RedisAddress: "localhost:6379",
 		ServerPort:   3000,
 	}
 

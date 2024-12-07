@@ -1,4 +1,4 @@
-package utils
+package generator
 
 type GenerateOrderOptions struct {
 	MaxLineItems int
