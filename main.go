@@ -3,19 +3,17 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/LewisT543/msvc-primefinder-go/application"
-	"github.com/LewisT543/msvc-primefinder-go/application/config"
 	"os"
 	"os/signal"
 )
 
 func main() {
-	c, err := config.LoadConfig()
+	conf, err := LoadConfig()
 	if err != nil {
 		fmt.Println("failed to load config: ", err)
 	}
 
-	app := application.New(c)
+	app := New(conf)
 
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()

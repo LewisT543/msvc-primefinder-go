@@ -1,8 +1,7 @@
-package application
+package main
 
 import (
-	"github.com/LewisT543/msvc-primefinder-go/application/api/handler"
-	"github.com/LewisT543/msvc-primefinder-go/application/repository/order"
+	order2 "github.com/LewisT543/msvc-primefinder-go/order"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"net/http"
@@ -23,8 +22,8 @@ func (a *App) loadRoutes() {
 }
 
 func (a *App) loadOrderRoutes(router chi.Router) {
-	orderHandler := &handler.Order{
-		Repo: &order.RedisRepo{
+	orderHandler := &order2.OrderHandler{
+		Repo: &order2.RedisRepo{
 			Client: a.rdb,
 		},
 	}

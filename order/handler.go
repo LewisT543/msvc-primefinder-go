@@ -1,12 +1,9 @@
-package handler
+package order
 
 import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/LewisT543/msvc-primefinder-go/application/model"
-	"github.com/LewisT543/msvc-primefinder-go/application/repository/order"
-	"github.com/LewisT543/msvc-primefinder-go/application/utils/generator"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 	"math/rand"
@@ -15,14 +12,14 @@ import (
 	"time"
 )
 
-type Order struct {
-	Repo *order.RedisRepo
+type OrderHandler struct {
+	Repo *RedisRepo
 }
 
-func (o *Order) Create(w http.ResponseWriter, r *http.Request) {
+func (h *OrderHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var body struct {
-		CustomerID uuid.UUID        `json:"customer_id"`
-		Lineitems  []model.LineItem `json:"line_items"`
+		CustomerID uuid.UUID  `json:"customer_id"`
+		Lineitems  []LineItem `json:"line_items"`
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
@@ -33,14 +30,14 @@ func (o *Order) Create(w http.ResponseWriter, r *http.Request) {
 
 	now := time.Now().UTC()
 
-	newOrder := model.Order{
+	newOrder := Order{
 		OrderID:    rand.Uint64(),
 		CustomerID: body.CustomerID,
 		LineItems:  body.Lineitems,
 		CreatedAt:  &now,
 	}
 
-	err := o.Repo.Insert(r.Context(), newOrder)
+	err := h.Repo.Insert(r.Context(), newOrder)
 	if err != nil {
 		fmt.Println("failed to insert: ", err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -62,7 +59,7 @@ func (o *Order) Create(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-func (o *Order) Generate(w http.ResponseWriter, r *http.Request) {
+func (h *OrderHandler) Generate(w http.ResponseWriter, r *http.Request) {
 	quantityStr := r.URL.Query().Get("quantityStr")
 	if quantityStr == "" {
 		quantityStr = "10"
@@ -75,8 +72,8 @@ func (o *Order) Generate(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("failed to parse:", err)
 	}
 
-	options := generator.NewGenerateOrderOptions()
-	orders := generator.GenerateOrders(int(quant), options)
+	options := NewGenerateOrderOptions()
+	orders := GenerateOrders(int(quant), options)
 
 	_, err = json.Marshal(orders)
 	if err != nil {
@@ -87,7 +84,7 @@ func (o *Order) Generate(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(orders)
 
 	for _, ord := range orders {
-		err := o.Repo.Insert(r.Context(), ord)
+		err := h.Repo.Insert(r.Context(), ord)
 		if err != nil {
 			fmt.Println("failed to write: ", err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -97,7 +94,7 @@ func (o *Order) Generate(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-func (o *Order) List(w http.ResponseWriter, r *http.Request) {
+func (h *OrderHandler) List(w http.ResponseWriter, r *http.Request) {
 	cursorStr := r.URL.Query().Get("cursor")
 	if cursorStr == "" {
 		cursorStr = "0"
@@ -113,7 +110,7 @@ func (o *Order) List(w http.ResponseWriter, r *http.Request) {
 	}
 
 	const size = 50
-	res, err := o.Repo.FindAll(r.Context(), order.FindAllPage{
+	res, err := h.Repo.FindAll(r.Context(), FindAllPage{
 		Offset: cursor,
 		Size:   size,
 	})
@@ -124,8 +121,8 @@ func (o *Order) List(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var response struct {
-		Items []model.Order `json:"items"`
-		Next  uint64        `json:"next,omitempty"` // omit the field in case there is an empty value
+		Items []Order `json:"items"`
+		Next  uint64  `json:"next,omitempty"` // omit the field in case there is an empty value
 	}
 	response.Items = res.Orders
 	response.Next = res.Cursor
@@ -143,7 +140,7 @@ func (o *Order) List(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (o *Order) GetByID(w http.ResponseWriter, r *http.Request) {
+func (h *OrderHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	idParam := chi.URLParam(r, "id")
 
 	const base = 10
@@ -155,8 +152,8 @@ func (o *Order) GetByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ord, err := o.Repo.FindByID(r.Context(), orderID)
-	if errors.Is(err, order.ErrNotExist) {
+	ord, err := h.Repo.FindByID(r.Context(), orderID)
+	if errors.Is(err, ErrNotExist) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	} else if err != nil {
@@ -172,7 +169,7 @@ func (o *Order) GetByID(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (o *Order) UpdateByID(w http.ResponseWriter, r *http.Request) {
+func (h *OrderHandler) UpdateByID(w http.ResponseWriter, r *http.Request) {
 	var body struct {
 		Status string `json:"status"`
 	}
@@ -193,8 +190,8 @@ func (o *Order) UpdateByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	retrievedOrder, err := o.Repo.FindByID(r.Context(), orderID)
-	if errors.Is(order.ErrNotExist, err) {
+	retrievedOrder, err := h.Repo.FindByID(r.Context(), orderID)
+	if errors.Is(ErrNotExist, err) {
 		fmt.Println("order not found:", err)
 		w.WriteHeader(http.StatusNotFound)
 		return
@@ -226,7 +223,7 @@ func (o *Order) UpdateByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = o.Repo.Update(r.Context(), retrievedOrder)
+	err = h.Repo.Update(r.Context(), retrievedOrder)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -239,7 +236,7 @@ func (o *Order) UpdateByID(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (o *Order) DeleteByID(w http.ResponseWriter, r *http.Request) {
+func (h *OrderHandler) DeleteByID(w http.ResponseWriter, r *http.Request) {
 	idParam := chi.URLParam(r, "id")
 
 	const base = 10
@@ -251,8 +248,8 @@ func (o *Order) DeleteByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = o.Repo.DeleteByID(r.Context(), orderID)
-	if errors.Is(order.ErrNotExist, err) {
+	err = h.Repo.DeleteByID(r.Context(), orderID)
+	if errors.Is(ErrNotExist, err) {
 		fmt.Println("order not found:", err)
 		w.WriteHeader(http.StatusNotFound)
 		return
