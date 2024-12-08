@@ -2,7 +2,13 @@ package primes
 
 import "math"
 
-func SegmentedSieve(low, high int) []int {
+type SegmentedSieveCalculator struct{}
+
+func (s SegmentedSieveCalculator) Calculate(low int, high int) []int {
+	return segmentedSieve(low, high)
+}
+
+func segmentedSieve(low, high int) []int {
 	if low > high || low < 2 {
 		return []int{}
 	}

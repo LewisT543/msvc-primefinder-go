@@ -41,9 +41,10 @@ func (a *App) loadOrderRoutes(router chi.Router) {
 
 func (a *App) loadPrimeRoutes(router chi.Router) {
 	primeHandler := &primes.PrimeHandler{
-		Repo: primes.RedisRepo{
+		Repo: &primes.RedisRepo{
 			Client: a.rdb,
 		},
+		Algo: primes.SegmentedSieveCalculator{},
 	}
 
 	router.Get("/", primeHandler.FindPrimes)
