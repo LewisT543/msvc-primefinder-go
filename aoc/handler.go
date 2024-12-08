@@ -14,22 +14,21 @@ type AOCHandler struct {
 	Problems []*AOCProblem
 }
 
-type SolverFn func(string) (string, error)
+type SolverFn func(string) string
 
 func NewAOCHandler() (*AOCHandler, error) {
 	problemData := []struct {
-		Filename         string
-		ShortDescription string
-		Solver           SolverFn
+		Filename string
+		Solver   SolverFn
 	}{
-		{Filename: "1_historian_hysteria", ShortDescription: "short-desc", Solver: SolveHistorianHysteria},
-		{Filename: "2_red-nosed_reports", ShortDescription: "short-desc", Solver: SolveRedNosedReports},
+		{Filename: "1_historian_hysteria", Solver: SolveHistorianHysteria},
+		{Filename: "2_red-nosed_reports", Solver: SolveRedNosedReports},
 	}
 
 	var problems []*AOCProblem
 
 	for _, data := range problemData {
-		problem, err := NewAOCProblem(data.Filename, data.ShortDescription, data.Solver)
+		problem, err := NewAOCProblem(data.Filename, data.Solver)
 		if err != nil {
 			return nil, fmt.Errorf("error creating AOCProblem for %s: %v", data.Filename, err)
 		}
@@ -62,24 +61,18 @@ func (h *AOCHandler) HandleAOC(w http.ResponseWriter, r *http.Request) {
 	}
 
 	start := time.Now()
-	solved, err := problem.SolverFn(input)
+	solved := problem.SolverFn(input)
 	duration := time.Since(start)
-	if err != nil {
-		http.Error(w, fmt.Sprintf("error solving problem: %v", err), http.StatusInternalServerError)
-		return
-	}
 
 	var response struct {
-		Title            string        `json:"title"`
-		Day              int           `json:"day"`
-		ShortDescription string        `json:"description"`
-		Solution         string        `json:"solution"`
-		Duration         time.Duration `json:"duration"`
+		Title    string        `json:"title"`
+		Day      int           `json:"day"`
+		Solution string        `json:"solution"`
+		Duration time.Duration `json:"duration"`
 	}
 
 	response.Title = problem.Title
 	response.Day = problem.Day
-	response.ShortDescription = problem.ShortDescription
 	response.Solution = solved
 	response.Duration = duration
 

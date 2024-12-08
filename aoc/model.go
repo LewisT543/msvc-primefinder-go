@@ -7,14 +7,13 @@ import (
 )
 
 type AOCProblem struct {
-	Filename         string
-	Title            string
-	ShortDescription string
-	Day              int
-	SolverFn         SolverFn
+	Filename string
+	Title    string
+	Day      int
+	SolverFn SolverFn
 }
 
-func NewAOCProblem(filename string, shortDescription string, solverFn SolverFn) (*AOCProblem, error) {
+func NewAOCProblem(filename string, solverFn SolverFn) (*AOCProblem, error) {
 	titleParts := strings.Split(filename, "_")
 	if len(titleParts) < 2 {
 		return nil, fmt.Errorf("invalid filename format")
@@ -32,11 +31,10 @@ func NewAOCProblem(filename string, shortDescription string, solverFn SolverFn) 
 	}
 
 	return &AOCProblem{
-		Filename:         filename,
-		Title:            title,
-		ShortDescription: shortDescription,
-		Day:              int(day),
-		SolverFn:         solverFn,
+		Filename: filename,
+		Title:    title,
+		Day:      int(day),
+		SolverFn: solverFn,
 	}, nil
 }
 

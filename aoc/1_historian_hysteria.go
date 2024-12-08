@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func SolveHistorianHysteria(input string) (string, error) {
+func SolveHistorianHysteria(input string) string {
 	var lefts, rights []int
 
 	lines := strings.Split(input, "\n")
@@ -27,7 +27,7 @@ func SolveHistorianHysteria(input string) (string, error) {
 		finalDif += abs(lefts[i] - rights[i])
 	}
 
-	return fmt.Sprintf("%d", finalDif), nil
+	return fmt.Sprintf("%d", finalDif)
 }
 
 func abs(a int) int {
