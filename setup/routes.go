@@ -1,6 +1,8 @@
-package main
+package setup
 
 import (
+	"fmt"
+	"github.com/LewisT543/msvc-primefinder-go/aoc"
 	"github.com/LewisT543/msvc-primefinder-go/order"
 	"github.com/LewisT543/msvc-primefinder-go/primes"
 	"github.com/go-chi/chi/v5"
@@ -20,6 +22,8 @@ func (a *App) loadRoutes() {
 	router.Route("/orders", a.loadOrderRoutes)
 
 	router.Route("/find-primes", a.loadPrimeRoutes)
+
+	router.Route("/aoc", a.loadAOCRoutes)
 
 	a.router = router
 }
@@ -48,4 +52,18 @@ func (a *App) loadPrimeRoutes(router chi.Router) {
 	}
 
 	router.Get("/", primeHandler.FindPrimes)
+}
+
+func (a *App) loadAOCRoutes(router chi.Router) {
+	aocHandler, err := aoc.NewAOCHandler()
+	if err != nil {
+		fmt.Printf("failed to construct new AOCHandler: %v\n", err)
+	}
+
+	fmt.Println("AOC Problems Loaded:")
+	for _, problem := range aocHandler.Problems {
+		fmt.Printf("\t%s\n", problem.Filename)
+	}
+
+	router.Get("/{day}", aocHandler.HandleAOC)
 }

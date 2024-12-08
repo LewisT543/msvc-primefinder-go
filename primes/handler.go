@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/LewisT543/msvc-primefinder-go/parser"
+	"github.com/LewisT543/msvc-primefinder-go/utils"
 	"net/http"
 	"time"
 )
@@ -32,13 +32,13 @@ type PrimeHandler struct {
 const lowHighErrorMessage = "'low' must be >= 2 and 'high' must be geater than 'low'"
 
 func (h PrimeHandler) FindPrimes(w http.ResponseWriter, r *http.Request) {
-	highLimit, err := parser.ParseQueryParam(r, "high", nil, parser.IntParser)
+	highLimit, err := utils.ParseQueryParam(r, "high", nil, utils.IntParser)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	lowLimit, err := parser.ParseQueryParam(r, "low", nil, parser.IntParser)
+	lowLimit, err := utils.ParseQueryParam(r, "low", nil, utils.IntParser)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
