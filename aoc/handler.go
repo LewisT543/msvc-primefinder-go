@@ -22,7 +22,7 @@ func NewAOCHandler() (*AOCHandler, error) {
 		ShortDescription string
 		Solver           SolverFn
 	}{
-		{Filename: "1_historian_hysteria", ShortDescription: "short-desc", Solver: func(string) (string, error) { return "5", nil }},
+		{Filename: "1_historian_hysteria", ShortDescription: "short-desc", Solver: SolveHistorianHysteria},
 	}
 
 	var problems []*AOCProblem
