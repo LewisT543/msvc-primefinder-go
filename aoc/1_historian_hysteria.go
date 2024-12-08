@@ -37,11 +37,11 @@ func abs(a int) int {
 	return a
 }
 
-const exampleInput = `3   4
+const historianHysteriaExampleInput = `3   4
 4   3
 2   5
 1   3
 3   9
 3   3`
 
-const exampleSolution = "11"
+const historianHysteriaExampleSolution = "11"
