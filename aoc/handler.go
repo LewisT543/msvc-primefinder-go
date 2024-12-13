@@ -24,6 +24,7 @@ func NewAOCHandler() (*AOCHandler, error) {
 		{Filename: "1_historian_hysteria", Solver: SolveHistorianHysteria},
 		{Filename: "2_red-nosed_reports", Solver: SolveRedNosedReports},
 		{Filename: "3_mull_it_over", Solver: SolveMullItOver},
+		{Filename: "4_ceres_search", Solver: SolveCeresSearch},
 	}
 
 	var problems []*AOCProblem

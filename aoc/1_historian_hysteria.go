@@ -7,6 +7,8 @@ import (
 	"strings"
 )
 
+// find the sum of differences of the smallest->largest sorted columns
+
 func SolveHistorianHysteria(input string) string {
 	var lefts, rights []int
 

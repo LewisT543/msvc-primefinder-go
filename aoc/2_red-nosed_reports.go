@@ -6,6 +6,8 @@ import (
 	"strings"
 )
 
+// Find the safe reports - a report is a line. A report is safe if it is A). ascending or descending, B). 0 < dif(a - b...) < 3 for each level where [a, b, c...]
+
 func SolveRedNosedReports(input string) string {
 	reports := strings.Split(input, "\r\n")
 	counter := 0
