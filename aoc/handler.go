@@ -27,6 +27,9 @@ func NewAOCHandler() (*AOCHandler, error) {
 		{Filename: "4_ceres_search", Solver: SolveCeresSearch},
 		{Filename: "5_print_queue", Solver: SolvePrintQueue},
 		{Filename: "6_guard_gallivant", Solver: SolveGuardGallivant},
+		{Filename: "7_bridge_repair", Solver: SolveBridgeRepair},
+		{Filename: "8_resonant_collinearity", Solver: SolveResonantCollinearity},
+		{Filename: "8_disk_fragmenter", Solver: SolveDiskFragmenter},
 	}
 
 	var problems []*AOCProblem
